@@ -6,7 +6,26 @@ import router from './router'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.css'
 import './assets/global.scss'
+import { ApolloClient, createNetworkInterface } from 'apollo-client'
+import VueApollo from 'vue-apollo'
 
+// Create the apollo client
+const apolloClient = new ApolloClient({
+  networkInterface: createNetworkInterface({
+    uri: 'https://api.github.com/graphql',
+    opts: {
+      headers: {
+        'Authorization': 'bearer '
+      }
+    }
+  }),
+  connectToDevTools: true
+})
+const apolloProvider = new VueApollo({
+  defaultClient: apolloClient
+})
+
+Vue.use(VueApollo)
 Vue.use(VueMaterial)
 
 Vue.config.productionTip = false
@@ -15,6 +34,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  apolloProvider,
   template: '<App/>',
   components: { App }
 })

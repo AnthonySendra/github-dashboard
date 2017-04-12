@@ -7,9 +7,9 @@
 
     <md-card-content>
       <md-list class="custom-list md-triple-line">
-        <md-list-item v-for="pr in prs" :key="pr.id">
+        <md-list-item v-for="pr in repository.pullRequests.edges" :key="pr.id">
           <md-avatar>
-            <img src="https://placeimg.com/40/40/people/1" alt="People">
+            <img src="pr.node.author.avatarUrl" alt="People">
           </md-avatar>
 
           <div class="md-list-text-container">
@@ -30,14 +30,35 @@
 </template>
 
 <script>
+  import gql from 'graphql-tag'
+
   export default {
     name: 'List',
     data () {
       return {
-        prs: [
-          { id: 'toto' }
-        ]
+        repository: {
+          pullRequests: {
+            edges: []
+          }
+        }
       }
+    },
+    apollo: {
+      repository: gql`{
+        repository(owner: "kuzzleio" name: "kuzzle") {
+          pullRequests(labels: "changelog:bug-fixes", states: OPEN, first: 10) {
+            edges {
+              node {
+                author {
+                  avatarURL
+                  login
+                }
+                title
+              }
+            }
+          }
+        }
+      }`
     }
   }
 </script>
