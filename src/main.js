@@ -15,7 +15,7 @@ const apolloClient = new ApolloClient({
     uri: 'https://api.github.com/graphql',
     opts: {
       headers: {
-        'Authorization': 'bearer '
+        'Authorization': `bearer ${localStorage.getItem('ghToken')}`
       }
     }
   }),

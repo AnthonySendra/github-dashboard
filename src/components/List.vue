@@ -9,13 +9,13 @@
       <md-list class="custom-list md-triple-line">
         <md-list-item v-for="pr in repository.pullRequests.edges" :key="pr.id">
           <md-avatar>
-            <img src="pr.node.author.avatarUrl" alt="People">
+            <img :src="pr.node.author.avatarURL" alt="pr.node.author.login">
           </md-avatar>
 
           <div class="md-list-text-container">
-            <span>Ali Connors</span>
-            <span>Brunch this weekend?</span>
-            <p>I'll be in your neighborhood doing errands...</p>
+            <span>{{ pr.node.title }}</span>
+            <span>{{ pr.node.repository.name }}</span>
+            <p>{{ pr.node.createdAt }}</p>
           </div>
 
           <md-button class="md-icon-button md-list-action">
@@ -44,7 +44,7 @@
       }
     },
     apollo: {
-      repository: gql`{
+      repository: gql`query GetPRs {
         repository(owner: "kuzzleio" name: "kuzzle") {
           pullRequests(labels: "changelog:bug-fixes", states: OPEN, first: 10) {
             edges {
@@ -54,6 +54,10 @@
                   login
                 }
                 title
+                repository {
+                  name
+                }
+                createdAt
               }
             }
           }
