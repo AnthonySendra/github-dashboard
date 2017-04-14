@@ -23,7 +23,7 @@
     </md-toolbar>
 
     <div class="main-content">
-      <router-view :username="username"></router-view>
+      <router-view :username="username" :members="members"></router-view>
     </div>
   </div>
 </template>
@@ -35,7 +35,8 @@
     data () {
       return {
         password: localStorage.getItem('ghToken') || null,
-        username: null
+        username: null,
+        members: []
       }
     },
     methods: {
@@ -52,6 +53,22 @@
           }
         }`,
         update: data => data.viewer.login
+      },
+      members: {
+        query: gql`query GetMembers {
+          repositoryOwner(login: "kuzzleio") {
+            ... on Organization {
+              members(first: 50) {
+                edges {
+                  node {
+                    login
+                  }
+                }
+              }
+            }
+          }
+        }`,
+        update: data => data.repositoryOwner.members.edges.map(edge => edge.node.login)
       }
     }
   }

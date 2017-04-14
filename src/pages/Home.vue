@@ -30,7 +30,7 @@
 
   export default {
     name: 'Home',
-    props: ['username'],
+    props: ['username', 'members'],
     components: {
       ListPr,
       ListIssues
@@ -46,7 +46,7 @@
         return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip review:changes_requested assignee:' + this.username
       },
       issuesNotFromKuzzleQuery () {
-        return 'is:open type:issue state:open user:kuzzleio sort:created-desc -author:scottinet -author:AnthonySendra -author:xbill82 -author:stafyniaksacha -author:jenow -author:benoitvidis -author:dbengsch -author:melmag -author:ballinette -author:EmilieEsposito -author:gandbox -author:gggeek'
+        return 'is:open type:issue state:open user:kuzzleio sort:created-desc -author:' + this.members.join(' -author:')
       }
     }
   }
