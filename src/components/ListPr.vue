@@ -4,8 +4,8 @@
       <div class="md-title">{{ title }}</div>
     </md-card-header>
 
-    <md-card-content>
       <md-list class="custom-list md-triple-line">
+        <p v-if="!prs.length">No Pull Request here.</p>
         <md-list-item v-for="pr in prs" :key="pr.id" :href="pr.node.url" target="_blank">
           <md-avatar>
             <img :src="pr.node.author.avatarURL" alt="pr.node.author.login">

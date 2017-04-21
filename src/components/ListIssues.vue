@@ -5,7 +5,21 @@
     </md-card-header>
 
     <md-card-content>
+      <md-layout :md-gutter="true">
+        <md-layout md-flex="50" md-flex-medium="50" md-flex-xsmall="100">
+          <md-input-container>
+            <label for="from">From</label>
+            <md-select name="from" id="from" v-model="from">
+              <md-option value="all">All</md-option>
+              <md-option value="kuzzle">Kuzzle Team</md-option>
+              <md-option value="contributors">Contributors</md-option>
+            </md-select>
+          </md-input-container>
+        </md-layout>
+      </md-layout>
+
       <md-list class="custom-list md-triple-line">
+        <p v-if="!issues.length">No issue here.</p>
         <md-list-item v-for="issue in issues" :key="issue.id" :href="issue.node.url" target="_blank">
           <md-avatar>
             <img :src="issue.node.author.avatarURL" alt="issue.node.author.login">
@@ -39,10 +53,23 @@
     components: {
       DateTime
     },
-    props: ['query', 'title'],
+    props: ['query', 'title', 'members'],
     data () {
       return {
-        issues: []
+        issues: [],
+        from: 'contributors'
+      }
+    },
+    computed: {
+      filteredQuery () {
+        switch (this.from) {
+          case 'all':
+            return this.query
+          case 'contributors':
+            return this.query + ' -author:' + this.members.join(' -author:')
+          case 'kuzzle':
+            return this.query + ' author:' + this.members.join(' author:')
+        }
       }
     },
     apollo: {
@@ -79,7 +106,7 @@
         }`,
         variables () {
           return {
-            query: this.query
+            query: this.filteredQuery
           }
         },
         update: data => data.search.edges
