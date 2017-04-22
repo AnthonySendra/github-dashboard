@@ -12,7 +12,7 @@
           </md-avatar>
 
           <div class="md-list-text-container">
-            <span>{{ pr.node.title }}</span>
+            <span class="title">{{ pr.node.title }}</span>
             <span>{{ pr.node.repository.name }}</span>
             <date-time class="date" :date="pr.node.createdAt" format="LLL"></date-time>
 

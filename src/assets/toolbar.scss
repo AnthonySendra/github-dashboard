@@ -1,0 +1,9 @@
+.md-toolbar {
+  .md-theme-default.md-input-container {
+    margin: 0;
+    .md-icon:not(.md-icon-delete):after {
+      background: none;
+    }
+  }
+}
+
