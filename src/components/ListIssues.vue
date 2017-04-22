@@ -4,6 +4,7 @@
       <div class="md-title">{{ title }}</div>
     </md-card-header>
 
+    <!-- FILTERS -->
     <md-card-content>
       <md-layout :md-gutter="true">
         <md-layout md-flex="50" md-flex-medium="50" md-flex-xsmall="100">
@@ -13,6 +14,16 @@
               <md-option value="all">All</md-option>
               <md-option value="kuzzle">Kuzzle Team</md-option>
               <md-option value="contributors">Contributors</md-option>
+            </md-select>
+          </md-input-container>
+        </md-layout>
+
+        <md-layout md-flex="50" md-flex-medium="50" md-flex-xsmall="100">
+          <md-input-container>
+            <label for="repository">Repository</label>
+            <md-select name="repository" id="repository" v-model="repository">
+              <md-option value="all">All</md-option>
+              <md-option v-for="repository in repositories" :value="repository" :key="repository">{{repository}}</md-option>
             </md-select>
           </md-input-container>
         </md-layout>
@@ -53,23 +64,39 @@
     components: {
       DateTime
     },
-    props: ['query', 'title', 'members'],
+    props: ['query', 'title', 'members', 'repositories'],
     data () {
       return {
         issues: [],
-        from: 'contributors'
+        from: 'contributors',
+        repository: 'all'
       }
     },
     computed: {
       filteredQuery () {
+        let _query = this.query
+
         switch (this.from) {
-          case 'all':
-            return this.query
           case 'contributors':
-            return this.query + ' -author:' + this.members.join(' -author:')
+            _query += ' -author:' + this.members.join(' -author:')
+            break
           case 'kuzzle':
-            return this.query + ' author:' + this.members.join(' author:')
+            _query += ' author:' + this.members.join(' author:')
+            break
         }
+
+        switch (this.repository) {
+          case 'all':
+            _query += ' user:kuzzleio'
+            break
+          default:
+            _query += ` repo:kuzzleio/${this.repository}`
+        }
+
+        return _query
+      },
+      filteredRepository () {
+
       }
     },
     apollo: {

@@ -12,7 +12,7 @@
     </md-layout>
 
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" :md-column="true">
-      <list-issues :query="issuesQuery" title="Issues" :members="members"></list-issues>
+      <list-issues :query="issuesQuery" title="Issues" :members="members" :repositories="repositories"></list-issues>
     </md-layout>
     <!--  My PRs still open with comment number -->
     <!-- PRs with responses on my feedback -->
@@ -30,7 +30,7 @@
 
   export default {
     name: 'Home',
-    props: ['username', 'members'],
+    props: ['username', 'members', 'repositories'],
     components: {
       ListPr,
       ListIssues
@@ -46,7 +46,7 @@
         return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip review:changes_requested assignee:' + this.username
       },
       issuesQuery () {
-        return 'is:open type:issue state:open user:kuzzleio sort:created-desc'
+        return 'is:open type:issue state:open sort:created-desc'
       }
     }
   }
