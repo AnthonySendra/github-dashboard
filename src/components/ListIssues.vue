@@ -48,6 +48,11 @@
             </div>
           </div>
 
+          <md-button class="md-icon-button md-list-action">
+            <md-icon>sms</md-icon>
+            <p>{{ issue.node.comments.totalCount }}</p>
+          </md-button>
+
           <md-divider class="md-inset"></md-divider>
         </md-list-item>
       </md-list>
@@ -116,6 +121,9 @@
                   createdAt
                   repository {
                     name
+                  }
+                  comments(first: 100) {
+                    totalCount
                   }
                   labels(first: 10) {
                     edges {

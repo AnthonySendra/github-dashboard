@@ -16,8 +16,6 @@
     </md-layout>
     <!--  My PRs still open with comment number -->
     <!-- PRs with responses on my feedback -->
-    <!-- All open issues (with dropdown on project) -->
-    <!-- New issue from contributors -->
     <!-- Last report -->
     <!-- Pie chart PRs open by project -->
     <!-- Line chart issues open by project -->
