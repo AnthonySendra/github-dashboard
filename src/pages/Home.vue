@@ -37,13 +37,13 @@
     },
     computed: {
       prsToReviewQuery () {
-        return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip -reviewed-by:' + this.username + ' -assignee:' + this.username
+        return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip -reviewed-by:' + this.username + ' -author:' + this.username
       },
       myPrsQuery () {
-        return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip assignee:' + this.username
+        return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip author:' + this.username
       },
       myPrsNeedChangeQuery () {
-        return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip review:changes_requested assignee:' + this.username
+        return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip review:changes_requested author:' + this.username
       },
       issuesQuery () {
         return 'is:open type:issue state:open sort:created-desc'
