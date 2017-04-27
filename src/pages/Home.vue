@@ -4,11 +4,10 @@
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" :md-column="true">
       <list-pr :query="prsToReviewQuery" title="PRs to review"></list-pr>
     </md-layout>
-    <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" :md-column="true">
-      <md-layout :md-column="true">
-        <list-pr :query="myPrsQuery" title="My PRs"></list-pr>
-        <list-pr :query="myPrsNeedChangeQuery" title="My PRs - need changes"></list-pr>
-      </md-layout>
+
+    <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" md-column>
+      <list-pr :query="myPrsQuery" title="My PRs"></list-pr>
+      <list-pr :query="myPrsNeedChangeQuery" title="My PRs - need changes"></list-pr>
     </md-layout>
 
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" :md-column="true">

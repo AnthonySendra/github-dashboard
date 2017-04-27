@@ -29,8 +29,8 @@
         </md-layout>
       </md-layout>
 
-      <md-list class="custom-list md-triple-line">
-        <p v-if="!issues.length">No issue here.</p>
+      <p v-if="!issues.length">No issue here.</p>
+      <md-list v-else class="custom-list md-triple-line">
         <md-list-item v-for="issue in issues" :key="issue.id" :href="issue.node.url" target="_blank">
           <md-avatar>
             <img :src="issue.node.author.avatarURL" alt="issue.node.author.login">
@@ -48,9 +48,12 @@
             </div>
           </div>
 
-          <md-button class="md-icon-button md-list-action">
-            <md-icon>sms</md-icon>
-            <p>{{ issue.node.comments.totalCount }}</p>
+          <md-button class="md-icon-button md-list-action comments-counter">
+            <md-icon :class="{'md-warn': issue.node.comments.totalCount === 0}">chat_bubble_outline</md-icon>
+            <div class="total">
+              <p v-if="issue.node.comments.totalCount">{{ issue.node.comments.totalCount }}</p>
+              <p v-else class="error">0</p>
+            </div>
           </md-button>
 
           <md-divider class="md-inset"></md-divider>
