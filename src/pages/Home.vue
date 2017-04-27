@@ -3,11 +3,7 @@
     <!-- PR to review (state open and not already approved or refused) -->
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" :md-column="true">
       <list-pr :query="prsToReviewQuery" title="PRs to review"></list-pr>
-      <vue-chart
-        chart-type="LineChart"
-        :columns="columns"
-        :rows="rows"
-      ></vue-chart>
+      <pie-chart-issues :query="prCountQuery" title="PRs by project"></pie-chart-issues>
     </md-layout>
 
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" md-column>
@@ -29,6 +25,7 @@
 <script>
   import ListPr from '../components/ListPr'
   import ListIssues from '../components/ListIssues'
+  import PieChartIssues from '../components/PieChartIssues'
 
   export default {
     name: 'Home',
@@ -52,7 +49,8 @@
     },
     components: {
       ListPr,
-      ListIssues
+      ListIssues,
+      PieChartIssues
     },
     computed: {
       prsToReviewQuery () {
@@ -66,6 +64,9 @@
       },
       issuesQuery () {
         return 'is:open type:issue state:open sort:created-desc'
+      },
+      prCountQuery () {
+        return 'is:open type:pr user:kuzzleio -label:wip'
       }
     }
   }
