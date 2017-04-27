@@ -1,7 +1,7 @@
 <template>
   <md-card class="pr">
     <md-card-header>
-      <div class="md-title">{{ title }}</div>
+      <div class="md-title">{{ title }} ({{ issues.length }})</div>
     </md-card-header>
 
     <!-- FILTERS -->

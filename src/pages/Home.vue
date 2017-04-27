@@ -3,6 +3,11 @@
     <!-- PR to review (state open and not already approved or refused) -->
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" :md-column="true">
       <list-pr :query="prsToReviewQuery" title="PRs to review"></list-pr>
+      <vue-chart
+        chart-type="LineChart"
+        :columns="columns"
+        :rows="rows"
+      ></vue-chart>
     </md-layout>
 
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" md-column>
@@ -28,6 +33,23 @@
   export default {
     name: 'Home',
     props: ['username', 'members', 'repositories'],
+    data () {
+      return {
+        columns: [{
+          'type': 'string',
+          'label': 'Date'
+        }, {
+          'type': 'number',
+          'label': 'Issues'
+        }],
+        rows: [
+          ['2004', 1000],
+          ['2005', 1170],
+          ['2006', 660],
+          ['2007', 1030]
+        ]
+      }
+    },
     components: {
       ListPr,
       ListIssues

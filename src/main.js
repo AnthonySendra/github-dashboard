@@ -8,6 +8,9 @@ import 'vue-material/dist/vue-material.css'
 import './assets/global.scss'
 import { ApolloClient, createNetworkInterface } from 'apollo-client'
 import VueApollo from 'vue-apollo'
+import VueCharts from 'vue-charts'
+
+Vue.use(VueCharts)
 
 // Create the apollo client
 const apolloClient = new ApolloClient({
