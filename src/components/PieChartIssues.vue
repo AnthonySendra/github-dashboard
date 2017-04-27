@@ -1,5 +1,5 @@
 <template>
-  <md-card>
+  <md-card class="pr">
     <md-card-header>
       <div class="md-title">{{ title }}</div>
     </md-card-header>
