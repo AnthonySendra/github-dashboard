@@ -31,6 +31,7 @@ const apolloProvider = new VueApollo({
 Vue.use(VueApollo)
 Vue.use(VueMaterial)
 
+Vue.material.inkRipple = false
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
