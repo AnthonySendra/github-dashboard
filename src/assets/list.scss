@@ -1,5 +1,13 @@
 .pr {
   margin-bottom: 10px;
+
+  .md-card-content {
+    &:last-child {
+      padding-bottom: 0;
+    }
+
+    max-height: 500px;
+  }
   .date {
     font-size: 0.8em;
   }
@@ -15,9 +23,10 @@
       color: #0b97c4;
       width: 16px;
       position: absolute;
-      top: -7px;
+      top: -3px;
       right: 12px;
       text-align: center;
+      font-size: 0.8em;
 
       .error {
         color: red;
