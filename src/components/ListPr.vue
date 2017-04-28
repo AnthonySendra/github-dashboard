@@ -2,12 +2,18 @@
   <md-card class="pr">
     <md-card-header>
       <div class="md-title">{{ title }} ({{ prs.length }})</div>
+      <md-layout :md-hide-medium="true">
+        <md-input-container :md-hide-small="true">
+          <label>Filter</label>
+          <md-input v-model="filter"></md-input>
+        </md-input-container>
+      </md-layout>
     </md-card-header>
 
     <md-card-content>
       <p v-if="!prs.length" class="nothing-there">No Pull Request here.</p>
       <md-list v-else class="custom-list md-triple-line">
-        <md-list-item v-for="pr in prs" :key="pr.id" :href="pr.node.url" target="_blank">
+        <md-list-item v-for="pr in filteredPrs" :key="pr.id" :href="pr.node.url" target="_blank">
           <md-avatar>
             <img :src="pr.node.author.avatarURL" alt="pr.node.author.login">
           </md-avatar>
@@ -48,7 +54,8 @@
     props: ['query', 'title'],
     data () {
       return {
-        prs: []
+        prs: [],
+        filter: null
       }
     },
     methods: {
@@ -70,6 +77,16 @@
 
         return pr.node.commits.edges[0].node.status.contexts.map((context) => {
           return context.description
+        })
+      }
+    },
+    computed: {
+      filteredPrs () {
+        if (!this.filter) {
+          return this.prs
+        }
+        return this.prs.map(pr => {
+//          return pr.node.title.indexOf(this.filter) !== -1
         })
       }
     },
