@@ -1,7 +1,7 @@
 <template>
   <md-card class="pr">
     <md-card-header>
-      <div class="md-title">{{ title }} ({{ prs.length }})</div>
+      <div class="md-title">{{ title }} ({{ filteredPrs.length }}) <span v-if="filterProject">- {{ filterProject }}</span></div>
     </md-card-header>
 
     <md-card-content>

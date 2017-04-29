@@ -3,7 +3,7 @@
     <!-- PR to review (state open and not already approved or refused) -->
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" :md-column="true">
       <list-pr :query="prsToReviewQuery" title="PRs to review" :include-filter="true" :filter-project="filterProjectPr"></list-pr>
-      <pie-chart-issues :query="prCountQuery" title="PRs by project" @select-project="addFilterProjectPr"></pie-chart-issues>
+      <pie-chart-issues :query="prCountQuery" title="PRs by project" @select-project="addFilterProjectPr" ></pie-chart-issues>
     </md-layout>
 
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" md-column>
@@ -14,11 +14,6 @@
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" :md-column="true">
       <list-issues :query="issuesQuery" title="Issues" :members="members" :repositories="repositories" :include-filter="true"></list-issues>
     </md-layout>
-    <!--  My PRs still open with comment number -->
-    <!-- PRs with responses on my feedback -->
-    <!-- Last report -->
-    <!-- Pie chart PRs open by project -->
-    <!-- Line chart issues open by project -->
   </md-layout>
 </template>
 
