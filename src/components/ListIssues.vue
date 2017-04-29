@@ -1,5 +1,5 @@
 <template>
-  <md-card class="pr">
+  <md-card class="pr list-issue">
     <md-card-header>
       <div class="md-title">{{ title }} ({{ issues.length }})</div>
     </md-card-header>
@@ -17,7 +17,6 @@
             </md-select>
           </md-input-container>
         </md-layout>
-
         <md-layout md-flex="50" md-flex-medium="50" md-flex-xsmall="100">
           <md-input-container>
             <label for="repository">Repository</label>
@@ -27,11 +26,18 @@
             </md-select>
           </md-input-container>
         </md-layout>
+
+        <md-layout :md-hide-medium="true" v-if="includeFilter">
+          <md-input-container md-inline :md-hide-small="true">
+            <label>Filter</label>
+            <md-input v-model="filter"></md-input>
+          </md-input-container>
+        </md-layout>
       </md-layout>
 
       <p v-if="!issues.length">No issue here.</p>
       <md-list v-else class="custom-list md-triple-line">
-        <md-list-item v-for="issue in issues" :key="issue.id" :href="issue.node.url" target="_blank">
+        <md-list-item v-for="issue in filteredIssues" :key="issue.id" :href="issue.node.url" target="_blank">
           <md-avatar>
             <img :src="issue.node.author.avatarURL" alt="issue.node.author.login">
           </md-avatar>
@@ -72,12 +78,13 @@
     components: {
       DateTime
     },
-    props: ['query', 'title', 'members', 'repositories'],
+    props: ['query', 'title', 'members', 'repositories', 'includeFilter'],
     data () {
       return {
         issues: [],
         from: 'contributors',
-        repository: 'all'
+        repository: 'all',
+        filter: ''
       }
     },
     computed: {
@@ -103,8 +110,13 @@
 
         return _query
       },
-      filteredRepository () {
-
+      filteredIssues () {
+        if (!this.filter.length) {
+          return this.issues
+        }
+        return this.issues.filter(issue => {
+          return issue.node.title.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1
+        })
       }
     },
     apollo: {

@@ -2,8 +2,8 @@
   <md-layout :md-gutter="true">
     <!-- PR to review (state open and not already approved or refused) -->
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" :md-column="true">
-      <list-pr :query="prsToReviewQuery" title="PRs to review"></list-pr>
-      <pie-chart-issues :query="prCountQuery" title="PRs by project"></pie-chart-issues>
+      <list-pr :query="prsToReviewQuery" title="PRs to review" :include-filter="true" :filter-project="filterProjectPr"></list-pr>
+      <pie-chart-issues :query="prCountQuery" title="PRs by project" @select-project="addFilterProjectPr"></pie-chart-issues>
     </md-layout>
 
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" md-column>
@@ -12,7 +12,7 @@
     </md-layout>
 
     <md-layout md-flex="33" md-flex-medium="50" md-flex-xsmall="100" md-flex-small="100" :md-column="true">
-      <list-issues :query="issuesQuery" title="Issues" :members="members" :repositories="repositories"></list-issues>
+      <list-issues :query="issuesQuery" title="Issues" :members="members" :repositories="repositories" :include-filter="true"></list-issues>
     </md-layout>
     <!--  My PRs still open with comment number -->
     <!-- PRs with responses on my feedback -->
@@ -44,7 +44,8 @@
           ['2005', 1170],
           ['2006', 660],
           ['2007', 1030]
-        ]
+        ],
+        filterProjectPr: null
       }
     },
     components: {
@@ -67,6 +68,11 @@
       },
       prCountQuery () {
         return 'is:open type:pr user:kuzzleio -label:wip'
+      }
+    },
+    methods: {
+      addFilterProjectPr (event) {
+        this.filterProjectPr = event
       }
     }
   }

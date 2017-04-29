@@ -2,15 +2,15 @@
   <md-card class="pr">
     <md-card-header>
       <div class="md-title">{{ title }} ({{ prs.length }})</div>
-      <md-layout :md-hide-medium="true">
-        <md-input-container :md-hide-small="true">
+    </md-card-header>
+
+    <md-card-content>
+      <md-layout :md-hide-medium="true" v-if="includeFilter">
+        <md-input-container md-inline :md-hide-small="true">
           <label>Filter</label>
           <md-input v-model="filter"></md-input>
         </md-input-container>
       </md-layout>
-    </md-card-header>
-
-    <md-card-content>
       <p v-if="!prs.length" class="nothing-there">No Pull Request here.</p>
       <md-list v-else class="custom-list md-triple-line">
         <md-list-item v-for="pr in filteredPrs" :key="pr.id" :href="pr.node.url" target="_blank">
@@ -51,11 +51,11 @@
     components: {
       DateTime
     },
-    props: ['query', 'title'],
+    props: ['query', 'title', 'includeFilter', 'filterProject'],
     data () {
       return {
         prs: [],
-        filter: null
+        filter: ''
       }
     },
     methods: {
@@ -82,12 +82,19 @@
     },
     computed: {
       filteredPrs () {
-        if (!this.filter) {
-          return this.prs
-        }
-        return this.prs.map(pr => {
-//          return pr.node.title.indexOf(this.filter) !== -1
-        })
+        return this.prs
+          .filter(pr => {
+            if (!this.filter) {
+              return true
+            }
+            return pr.node.title.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1
+          })
+          .filter(pr => {
+            if (!this.filterProject) {
+              return true
+            }
+            return pr.node.repository.name.toLowerCase().indexOf(this.filterProject.toLowerCase()) !== -1
+          })
       }
     },
     apollo: {

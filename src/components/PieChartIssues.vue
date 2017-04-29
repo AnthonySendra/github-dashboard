@@ -8,6 +8,8 @@
         chart-type="PieChart"
         :columns="columns"
         :rows="groupRows"
+        ref="chart"
+        :chart-events="chartEvents"
       ></vue-chart>
     </md-card-content>
   </md-card>
@@ -28,18 +30,30 @@
           'type': 'number',
           'label': 'Number'
         }],
-        rows: []
+        rows: [],
+        chartEvents: {
+          select: () => {
+            let selections = this.$refs.chart.chart.getSelection()
+            if (selections && selections[0] && selections[0].row !== null) {
+              this.$emit('select-project', this.groupRows[selections[0].row][0])
+              return
+            }
+
+            this.$emit('select-project', null)
+          }
+        }
       }
     },
     computed: {
       groupRows () {
         let groups = {}
-        this.rows.forEach((row) => {
-          if (!groups[row.node.repository.name]) {
-            groups[row.node.repository.name] = 0
-          }
-          groups[row.node.repository.name]++
-        })
+        this.rows
+          .forEach(row => {
+            if (!groups[row.node.repository.name]) {
+              groups[row.node.repository.name] = 0
+            }
+            groups[row.node.repository.name]++
+          })
 
         return Object.keys(groups).map(groupName => {
           return [groupName, groups[groupName]]

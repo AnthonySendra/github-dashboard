@@ -1,4 +1,10 @@
 .pr {
+  &.list-issue {
+    .md-card-content {
+      max-height: 700px;
+    }
+  }
+
   margin-bottom: 10px;
 
   .md-card-content {
@@ -7,6 +13,10 @@
     }
 
     max-height: 500px;
+
+    .md-input-container {
+      margin: 0;
+    }
   }
   .date {
     font-size: 0.8em;
