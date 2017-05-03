@@ -63,19 +63,18 @@
         return pr.node.commits &&
           pr.node.commits.edges[0] &&
           pr.node.commits.edges[0].node &&
-          pr.node.commits.edges[0].node.status &&
-          pr.node.commits.edges[0].node.status.state === state
+          pr.node.commits.edges[0].node.commit.status &&
+          pr.node.commits.edges[0].node.commit.status.state === state
       },
       stateDescriptions (pr) {
         if (!pr.node.commits ||
           !pr.node.commits.edges[0] ||
           !pr.node.commits.edges[0].node ||
-          !pr.node.commits.edges[0].node.status ||
-          !pr.node.commits.edges[0].node.status) {
+          !pr.node.commits.edges[0].node.commit.status) {
           return []
         }
 
-        return pr.node.commits.edges[0].node.status.contexts.map((context) => {
+        return pr.node.commits.edges[0].node.commit.status.contexts.map((context) => {
           return context.description
         })
       }
@@ -127,11 +126,13 @@
                   commits(last:1) {
                     edges {
                       node {
-                        status {
-                          state
-#                          contexts {
-#                            description
-#                          }
+                        commit {
+                          status {
+                            state
+  #                          contexts {
+  #                            description
+  #                          }
+                          }
                         }
                       }
                     }
