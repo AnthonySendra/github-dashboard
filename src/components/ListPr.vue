@@ -15,7 +15,7 @@
       <md-list v-else class="custom-list md-triple-line">
         <md-list-item v-for="pr in filteredPrs" :key="pr.id" :href="pr.node.url" target="_blank">
           <md-avatar>
-            <img :src="pr.node.author.avatarURL" alt="pr.node.author.login">
+            <img :src="pr.node.author.avatarUrl" alt="pr.node.author.login">
           </md-avatar>
 
           <div class="md-list-text-container">
@@ -106,7 +106,7 @@
                   id
                   url
                   author {
-                    avatarURL
+                    avatarUrl
                     login
                   }
                   title

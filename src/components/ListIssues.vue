@@ -39,7 +39,7 @@
       <md-list v-else class="custom-list md-triple-line">
         <md-list-item v-for="issue in filteredIssues" :key="issue.id" :href="issue.node.url" target="_blank">
           <md-avatar>
-            <img :src="issue.node.author.avatarURL" alt="issue.node.author.login">
+            <img :src="issue.node.author.avatarUrl" alt="issue.node.author.login">
           </md-avatar>
 
           <div class="md-list-text-container">
@@ -129,7 +129,7 @@
                   id
                   url
                   author {
-                    avatarURL
+                    avatarUrl
                     login
                   }
                   title
