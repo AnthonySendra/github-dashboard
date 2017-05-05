@@ -1,7 +1,11 @@
 <template>
   <md-card class="pr">
     <md-card-header>
-      <div class="md-title">{{ title }} ({{ filteredPrs.length }}) <span v-if="filterProject">- {{ filterProject }}</span></div>
+      <div class="md-title">
+        <a :href="'https://github.com/search?utf8=✓&q=' + query" target="_blank">
+          {{ title }} ({{ filteredPrs.length }}) <span v-if="filterProject">- {{ filterProject }}</span>
+        </a>
+      </div>
     </md-card-header>
 
     <md-card-content>
