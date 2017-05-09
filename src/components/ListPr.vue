@@ -1,5 +1,5 @@
 <template>
-  <md-card class="pr">
+  <md-card class="pr list-pr">
     <md-card-header>
       <div class="md-title">
         <a :href="'https://github.com/search?utf8=✓&q=' + query" target="_blank">
@@ -36,7 +36,8 @@
 
           <md-button class="md-icon-button md-list-action">
             <md-icon v-if="state(pr, 'SUCCESS', 'MERGEABLE')" class="md-primary">check</md-icon>
-            <md-icon v-else-if="state(pr, 'FAILURE')" class="md-warn">close</md-icon>
+            <md-icon v-if="state(pr, 'PENDING', 'MERGEABLE')" class="md-warn"><i class="material-icons">fiber_manual_record</i></md-icon>
+            <md-icon v-else-if="state(pr, 'FAILURE')" class="md-error">close</md-icon>
           </md-button>
 
           <md-divider class="md-inset"></md-divider>
