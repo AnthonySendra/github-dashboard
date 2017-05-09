@@ -35,7 +35,7 @@
           </div>
 
           <md-button class="md-icon-button md-list-action">
-            <md-icon v-if="state(pr, 'SUCCESS')" class="md-primary">check</md-icon>
+            <md-icon v-if="state(pr, 'SUCCESS', 'MERGEABLE')" class="md-primary">check</md-icon>
             <md-icon v-else-if="state(pr, 'FAILURE')" class="md-warn">close</md-icon>
           </md-button>
 
@@ -63,12 +63,13 @@
       }
     },
     methods: {
-      state (pr, state) {
+      state (pr, state, mergeable) {
         return pr.node.commits &&
           pr.node.commits.edges[0] &&
           pr.node.commits.edges[0].node &&
           pr.node.commits.edges[0].node.commit.status &&
-          pr.node.commits.edges[0].node.commit.status.state === state
+          pr.node.commits.edges[0].node.commit.status.state === state &&
+          (!mergeable || pr.node.mergeable === mergeable)
       },
       stateDescriptions (pr) {
         if (!pr.node.commits ||
@@ -109,6 +110,7 @@
                 ... on PullRequest {
                   id
                   url
+                  mergeable
                   author {
                     avatarUrl
                     login

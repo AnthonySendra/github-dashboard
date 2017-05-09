@@ -53,7 +53,7 @@
         return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip -reviewed-by:' + this.username + ' -author:' + this.username
       },
       myPrsQuery () {
-        return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip author:' + this.username
+        return 'is:open type:pr user:kuzzleio sort:created-desc author:' + this.username
       },
       myPrsNeedChangeQuery () {
         return 'is:open type:pr user:kuzzleio sort:created-desc -label:wip review:changes_requested author:' + this.username
