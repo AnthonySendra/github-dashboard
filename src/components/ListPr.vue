@@ -25,7 +25,13 @@
           <div class="md-list-text-container">
             <span class="title">{{ pr.node.title }}</span>
             <span>{{ pr.node.repository.name }}</span>
-            <date-time class="date" :date="pr.node.createdAt" format="LLL"></date-time>
+
+            <span class="additional-info">
+              <date-time :date="pr.node.createdAt" format="L"></date-time>
+              <span>
+                - {{ pr.node.reviews.edges.length }} {{ pr.node.reviews.edges.length > 1 ? 'reviews': 'review' }}
+              </span>
+            </span>
 
             <div class="labels">
               <span v-for="label in pr.node.labels.edges" :key="label.node.id" :style="{color: '#'+label.node.color}">
@@ -71,18 +77,6 @@
           pr.node.commits.edges[0].node.commit.status &&
           pr.node.commits.edges[0].node.commit.status.state === state &&
           (!mergeable || pr.node.mergeable === mergeable)
-      },
-      stateDescriptions (pr) {
-        if (!pr.node.commits ||
-          !pr.node.commits.edges[0] ||
-          !pr.node.commits.edges[0].node ||
-          !pr.node.commits.edges[0].node.commit.status) {
-          return []
-        }
-
-        return pr.node.commits.edges[0].node.commit.status.contexts.map((context) => {
-          return context.description
-        })
       }
     },
     computed: {
@@ -127,6 +121,15 @@
                         id
                         name
                         color
+                      }
+                    }
+                  }
+                  reviews (first: 100) {
+                    edges {
+                      node {
+                        author {
+                          login
+                        }
                       }
                     }
                   }
