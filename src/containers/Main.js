@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import MissingToken from '../components/MissingToken'
+import MissingToken from './MissingToken'
 import Dashboard from './Dashboard'
 
 class Main extends Component {
@@ -9,7 +9,7 @@ class Main extends Component {
       return <MissingToken />
     }
 
-    return <Dashboard />
+    return <Dashboard token={this.props.token} />
   }
 }
 

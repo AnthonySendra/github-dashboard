@@ -8,7 +8,7 @@ const initState = {
   token: null
 }
 
-const setTokenReducer = (state, token) => ({ token })
+const setTokenReducer = (state, action) => ({ token: action.token })
 
 export const creators = {
   setToken: token => ({ type: Types.SET_TOKEN, token })

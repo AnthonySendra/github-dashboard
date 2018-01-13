@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 class Dashboard extends Component {
   render() {
-    return <p>OK</p>
+    return <p>OK {this.props.token}</p>
   }
 }
 
