@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import MissingToken from './MissingToken'
-import Dashboard from './Dashboard'
+import MissingToken from './MissingToken/MissingToken'
+import SelectRepositories from './SelectRepositories/SelectRepositories'
+import { ApolloProvider } from 'react-apollo'
+import getApolloClient from '../services/apollo'
 
 class Main extends Component {
   render() {
@@ -9,7 +11,11 @@ class Main extends Component {
       return <MissingToken />
     }
 
-    return <Dashboard token={this.props.token} />
+    return (
+      <ApolloProvider client={getApolloClient(this.props.token)}>
+        <SelectRepositories />
+      </ApolloProvider>
+    )
   }
 }
 

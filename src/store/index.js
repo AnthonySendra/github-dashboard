@@ -2,7 +2,6 @@ import { compose, createStore } from 'redux'
 import reducers from './reducers'
 import persistState, { mergePersistedState } from 'redux-localstorage'
 import adapter from 'redux-localstorage/lib/adapters/localStorage'
-import filter from 'redux-localstorage-filter'
 
 const persistedReducers = compose(mergePersistedState())(reducers)
 const storage = adapter(window.localStorage)
