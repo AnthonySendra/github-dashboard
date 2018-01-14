@@ -12,13 +12,50 @@ import Typography from 'material-ui/Typography'
 import RepositoryLine from './RepositoryLine'
 import List from 'material-ui/List'
 import TextField from 'material-ui/TextField'
+import { withStyles } from 'material-ui/styles'
+import { withApollo } from 'react-apollo'
+
+const styles = theme => ({
+  content: {
+    height: 300,
+    overflowY: 'scroll'
+  }
+})
 
 class Repositories extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      filter: ''
+      filter: '',
+      loading: true,
+      viewer: null
     }
+  }
+
+  async componentWillMount() {
+    const viewer = await this.executeRequest()
+
+    //this.setState({ loading: false, viewer: result.data.viewer })
+  }
+
+  async executeRequest(data = null, cursor = null) {
+    const result = await this.props.client.query({ query: getRepositories, variables: { cursor } })
+    const hasNextRepository = result.data.viewer.organizations.nodes.find(
+      orga => orga.repositories.pageInfo.hasNext
+    )
+
+    if (!data) {
+      data = result
+    }
+
+    if (hasNextRepository) {
+      const newOrganizationRepositories = await this.executeRequest(
+        data,
+        hasNextRepository.repositories.pageInfo.endCursor
+      )
+    }
+
+    return data
   }
 
   handleFilterChange = event => {
@@ -51,9 +88,9 @@ class Repositories extends Component {
   }
 */
   render() {
-    const { handleSelectRepository, data } = this.props
+    const { handleSelectRepository, classes } = this.props
 
-    if (this.props.data.loading) {
+    if (this.state.loading || !this.state.viewer) {
       return (
         <Grid container justify="center">
           <Grid item xs={2}>
@@ -73,16 +110,16 @@ class Repositories extends Component {
               onChange={this.handleFilterChange}
             />
           </form>
-          <ExpansionPanel key={data.viewer.login}>
+          <ExpansionPanel key={this.state.viewer.login}>
             <ExpansionPanelSummary expandIcon={<Icon>keyboard_arrow_down</Icon>}>
               <Typography>
-                <img heigh="25px" width="25px" src={data.viewer.avatarUrl} />
+                <img heigh="25px" width="25px" src={this.state.viewer.avatarUrl} />
               </Typography>
-              <Typography>{data.viewer.login}</Typography>
+              <Typography>{this.state.viewer.login}</Typography>
             </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
+            <ExpansionPanelDetails className={classes.content}>
               <List disablePadding dense>
-                {data.viewer.repositories.nodes.map(repository => (
+                {this.state.viewer.repositories.nodes.map(repository => (
                   <RepositoryLine
                     key={repository.name}
                     name={repository.name}
@@ -93,7 +130,7 @@ class Repositories extends Component {
               </List>
             </ExpansionPanelDetails>
           </ExpansionPanel>
-          {data.viewer.organizations.nodes.map(orga => (
+          {this.state.viewer.organizations.nodes.map(orga => (
             <ExpansionPanel key={orga.login}>
               <ExpansionPanelSummary expandIcon={<Icon>keyboard_arrow_down</Icon>}>
                 <Typography>
@@ -101,7 +138,7 @@ class Repositories extends Component {
                 </Typography>
                 <Typography>{orga.login}</Typography>
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
+              <ExpansionPanelDetails className={classes.content}>
                 <List disablePadding dense>
                   {orga.repositories.nodes.map(repository => (
                     <RepositoryLine
@@ -122,7 +159,7 @@ class Repositories extends Component {
 }
 
 const getRepositories = gql`
-  query getRepositories($after: String) {
+  query getRepositories($cursor: String) {
     viewer {
       organizations(first: 100) {
         nodes {
@@ -130,7 +167,7 @@ const getRepositories = gql`
           avatarUrl(size: 25)
           repositories(
             first: 100
-            after: $after
+            after: $cursor
             affiliations: [OWNER]
             orderBy: { field: NAME, direction: ASC }
           ) {
@@ -157,4 +194,5 @@ const getRepositories = gql`
   }
 `
 
-export default graphql(getRepositories)(Repositories)
+const RepositoriesWithStyles = withStyles(styles)(Repositories)
+export default withApollo(RepositoriesWithStyles)
