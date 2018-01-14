@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Typography from 'material-ui/Typography'
+import Grid from 'material-ui/Grid'
 import { creators } from '../../store/github'
 import MessageFullPage from '../../components/MessageFullPage/MessageFullPage'
 import Repositories from '../../apolloComponents/Repositories/Repositories'
@@ -34,7 +35,11 @@ class SelectRepositories extends Component {
         <Typography type="subheading" paragraph align="center">
           You will be able to change the followed repositories at any time.
         </Typography>
-        <Repositories handleSelectRepository={this.handleSelectRepository} />
+        <Grid container justify="center">
+          <Grid item xs={8}>
+            <Repositories handleSelectRepository={this.handleSelectRepository} />
+          </Grid>
+        </Grid>
       </MessageFullPage>
     )
   }
