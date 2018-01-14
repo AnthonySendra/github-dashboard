@@ -24,7 +24,7 @@ class Repositories extends Component {
   handleFilterChange = event => {
     this.setState({ filter: event.target.value })
   }
-
+  /*
   filteredRepositoriesByOwner = () => {
     const { repositoriesByOwner } = this.props
 
@@ -49,9 +49,9 @@ class Repositories extends Component {
         }
       })
   }
-
+*/
   render() {
-    const { handleSelectRepository } = this.props
+    const { handleSelectRepository, data } = this.props
 
     if (this.props.data.loading) {
       return (
@@ -73,17 +73,37 @@ class Repositories extends Component {
               onChange={this.handleFilterChange}
             />
           </form>
-          {this.filteredRepositoriesByOwner().map(owner => (
-            <ExpansionPanel key={owner.login}>
+          <ExpansionPanel key={data.viewer.login}>
+            <ExpansionPanelSummary expandIcon={<Icon>keyboard_arrow_down</Icon>}>
+              <Typography>
+                <img heigh="25px" width="25px" src={data.viewer.avatarUrl} />
+              </Typography>
+              <Typography>{data.viewer.login}</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <List disablePadding dense>
+                {data.viewer.repositories.nodes.map(repository => (
+                  <RepositoryLine
+                    key={repository.name}
+                    name={repository.name}
+                    url={repository.url}
+                    handleSelectRepository={handleSelectRepository}
+                  />
+                ))}
+              </List>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          {data.viewer.organizations.nodes.map(orga => (
+            <ExpansionPanel key={orga.login}>
               <ExpansionPanelSummary expandIcon={<Icon>keyboard_arrow_down</Icon>}>
                 <Typography>
-                  <img src={owner.avatarUrl} />
+                  <img heigh="25px" width="25px" src={orga.avatarUrl} />
                 </Typography>
-                <Typography>{owner.login}</Typography>
+                <Typography>{orga.login}</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <List disablePadding dense>
-                  {owner.repositories.map(repository => (
+                  {orga.repositories.nodes.map(repository => (
                     <RepositoryLine
                       key={repository.name}
                       name={repository.name}
@@ -101,55 +121,40 @@ class Repositories extends Component {
   }
 }
 
-const RepositoriesAndOwner = gql`
-  query RepositoriesAndOwner {
+const getRepositories = gql`
+  query getRepositories($after: String) {
     viewer {
-      repositories(first: 100, affiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER]) {
+      organizations(first: 100) {
         nodes {
-          url
-          name
-          id
-          owner {
-            avatarUrl(size: 25)
-            login
+          login
+          avatarUrl(size: 25)
+          repositories(
+            first: 100
+            after: $after
+            affiliations: [OWNER]
+            orderBy: { field: NAME, direction: ASC }
+          ) {
+            nodes {
+              name
+              url
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+            }
           }
         }
       }
+      repositories(first: 100, affiliations: [OWNER], orderBy: { field: NAME, direction: ASC }) {
+        nodes {
+          name
+          url
+        }
+      }
+      login
+      avatarUrl(size: 25)
     }
   }
 `
 
-const sortRepositoriesByOwner = viewer => {
-  const repositoriesByOwner = []
-
-  if (!viewer) {
-    return []
-  }
-
-  viewer.repositories.nodes.forEach(repo => {
-    let repository = { url: repo.url, name: repo.name }
-    let repositoryOwner = repositoriesByOwner.find(
-      ownerRepositories => ownerRepositories.login === repo.owner.login
-    )
-
-    if (!repositoryOwner) {
-      repositoriesByOwner.push({
-        login: repo.owner.login,
-        avatarUrl: repo.owner.avatarUrl,
-        repositories: [repository]
-      })
-    } else {
-      repositoryOwner.repositories.push(repository)
-      repositoryOwner.repositories.sort((a, b) => (a.name < b.name ? -1 : 1))
-    }
-  })
-
-  return repositoriesByOwner.sort((a, b) => (a.login < b.login ? -1 : 1))
-}
-
-export default graphql(RepositoriesAndOwner, {
-  props: ({ data }) => ({
-    repositoriesByOwner: sortRepositoriesByOwner(data.viewer),
-    data
-  })
-})(Repositories)
+export default graphql(getRepositories)(Repositories)

@@ -54,7 +54,7 @@ class MissingToken extends Component {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://github.com/settings/tokens/new?description=Github%20Dashboard&scopes=repo:status,read:org,read:user"
+            href="https://github.com/settings/tokens/new?description=Github%20Dashboard&scopes=repo,read:org,read:user"
           >
             Click here to generate an Access Token
           </a>
