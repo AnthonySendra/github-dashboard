@@ -33,30 +33,29 @@ class Repositories extends Component {
   }
 
   async componentWillMount() {
-    const viewer = await this.executeRequest()
+    const viewer = await this.executeGetRepositories()
 
     //this.setState({ loading: false, viewer: result.data.viewer })
   }
 
-  async executeRequest(data = null, cursor = null) {
-    const result = await this.props.client.query({ query: getRepositories, variables: { cursor } })
-    const hasNextRepository = result.data.viewer.organizations.nodes.find(
-      orga => orga.repositories.pageInfo.hasNext
-    )
+  async executeGetRepositories(data = null) {
+    const result = await this.props.client.query({ query: getRepositories })
+    const organizations = result.data.viewer.organizations.nodes
+      .filter(orga => orga.repositories.pageInfo.hasNextPage)
+      .map(orga => orga)
 
-    if (!data) {
-      data = result
-    }
+    // PARRALEL
+    const moreRepositories = {}
+    organizations.forEach(organization => {
+      moreRepositories[organization.login] = []
+    })
 
-    if (hasNextRepository) {
-      const newOrganizationRepositories = await this.executeRequest(
-        data,
-        hasNextRepository.repositories.pageInfo.endCursor
-      )
-    }
+    console.log(moreRepositories)
 
     return data
   }
+
+  async executeGetRepositoriesForOrganization(data, login, cursor) {}
 
   handleFilterChange = event => {
     this.setState({ filter: event.target.value })
@@ -159,7 +158,7 @@ class Repositories extends Component {
 }
 
 const getRepositories = gql`
-  query getRepositories($cursor: String) {
+  query getRepositories {
     viewer {
       organizations(first: 100) {
         nodes {
@@ -167,7 +166,6 @@ const getRepositories = gql`
           avatarUrl(size: 25)
           repositories(
             first: 100
-            after: $cursor
             affiliations: [OWNER]
             orderBy: { field: NAME, direction: ASC }
           ) {
@@ -190,6 +188,28 @@ const getRepositories = gql`
       }
       login
       avatarUrl(size: 25)
+    }
+  }
+`
+
+const getRepositoriesForOrganization = gql`
+  query getRepositories($login: String!, $cursor: String!) {
+    organization(login: $login) {
+      repositories(
+        first: 100
+        after: $cursor
+        affiliations: [OWNER]
+        orderBy: { field: NAME, direction: ASC }
+      ) {
+        nodes {
+          name
+          url
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+      }
     }
   }
 `
