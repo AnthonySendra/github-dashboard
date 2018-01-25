@@ -8,6 +8,7 @@ yarn-error.log*
 test/unit/coverage
 test/e2e/reports
 selenium-debug.log
+.vscode
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies

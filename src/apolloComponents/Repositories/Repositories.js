@@ -33,29 +33,59 @@ class Repositories extends Component {
   }
 
   async componentWillMount() {
-    const viewer = await this.executeGetRepositories()
-
-    //this.setState({ loading: false, viewer: result.data.viewer })
+    this.setState({ loading: false, organizations: await this.executeGetRepositories() })
   }
 
   async executeGetRepositories(data = null) {
     const result = await this.props.client.query({ query: getRepositories })
-    const organizations = result.data.viewer.organizations.nodes
-      .filter(orga => orga.repositories.pageInfo.hasNextPage)
-      .map(orga => orga)
+    const organizationsRepositories = []
 
     // PARRALEL
-    const moreRepositories = {}
-    organizations.forEach(organization => {
-      moreRepositories[organization.login] = []
+    organizationsRepositories.push({
+      login: result.data.viewer.login,
+      avatarUrl: result.data.viewer.avatarUrl,
+      repositories: result.data.viewer.repositories.nodes
     })
 
-    console.log(moreRepositories)
+    result.data.viewer.organizations.nodes.forEach(async orgaRepo => {
+      let organization = {
+        login: orgaRepo.login,
+        avatarUrl: orgaRepo.avatarUrl,
+        repositories: orgaRepo.repositories.nodes || []
+      }
 
-    return data
+      if (orgaRepo.repositories.pageInfo.hasNextPage) {
+        organization.repositories = await this.executeGetRepositoriesForOrganization(
+          organization.repositories,
+          orgaRepo.login,
+          orgaRepo.repositories.pageInfo.endCursor
+        )
+      }
+
+      organizationsRepositories.push(organization)
+    })
+
+    return organizationsRepositories
   }
 
-  async executeGetRepositoriesForOrganization(data, login, cursor) {}
+  async executeGetRepositoriesForOrganization(repositories, login, cursor) {
+    const result = await this.props.client.query({
+      query: getRepositoriesForOrganization,
+      variables: { login, cursor }
+    })
+
+    const allRepositories = [...repositories, ...result.data.organization.repositories.nodes]
+
+    if (result.data.organization.repositories.pageInfo.hasNextPage) {
+      return await this.executeGetRepositoriesForOrganization(
+        allRepositories,
+        login,
+        result.data.organization.repositories.pageInfo.endCursor
+      )
+    }
+
+    return allRepositories
+  }
 
   handleFilterChange = event => {
     this.setState({ filter: event.target.value })
@@ -89,7 +119,7 @@ class Repositories extends Component {
   render() {
     const { handleSelectRepository, classes } = this.props
 
-    if (this.state.loading || !this.state.viewer) {
+    if (this.state.loading || !this.state.organizations) {
       return (
         <Grid container justify="center">
           <Grid item xs={2}>
@@ -109,27 +139,7 @@ class Repositories extends Component {
               onChange={this.handleFilterChange}
             />
           </form>
-          <ExpansionPanel key={this.state.viewer.login}>
-            <ExpansionPanelSummary expandIcon={<Icon>keyboard_arrow_down</Icon>}>
-              <Typography>
-                <img heigh="25px" width="25px" src={this.state.viewer.avatarUrl} />
-              </Typography>
-              <Typography>{this.state.viewer.login}</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails className={classes.content}>
-              <List disablePadding dense>
-                {this.state.viewer.repositories.nodes.map(repository => (
-                  <RepositoryLine
-                    key={repository.name}
-                    name={repository.name}
-                    url={repository.url}
-                    handleSelectRepository={handleSelectRepository}
-                  />
-                ))}
-              </List>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-          {this.state.viewer.organizations.nodes.map(orga => (
+          {this.state.organizations.map(orga => (
             <ExpansionPanel key={orga.login}>
               <ExpansionPanelSummary expandIcon={<Icon>keyboard_arrow_down</Icon>}>
                 <Typography>
@@ -139,7 +149,7 @@ class Repositories extends Component {
               </ExpansionPanelSummary>
               <ExpansionPanelDetails className={classes.content}>
                 <List disablePadding dense>
-                  {orga.repositories.nodes.map(repository => (
+                  {orga.repositories.map(repository => (
                     <RepositoryLine
                       key={repository.name}
                       name={repository.name}
